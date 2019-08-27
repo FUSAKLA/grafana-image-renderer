@@ -77,7 +77,9 @@ export class Browser {
 
       // wait for all panels to render
       await page.waitForFunction(() => {
-        await sleep(2000);
+        sleep(2000).then(() => {
+          console.log("slept");
+        });
         return true;
         //const panelCount = document.querySelectorAll('.panel-wrapper').length;
         //return (<any>window).panelsRendered >= panelCount;
