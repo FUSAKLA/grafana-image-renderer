@@ -4,6 +4,11 @@ import * as puppeteer from 'puppeteer';
 import { Logger } from './logger';
 import uniqueFilename = require('unique-filename');
 
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export class Browser {
 
   constructor(private log: Logger) {
@@ -72,8 +77,10 @@ export class Browser {
 
       // wait for all panels to render
       await page.waitForFunction(() => {
-        const panelCount = document.querySelectorAll('.panel-wrapper').length;
-        return (<any>window).panelsRendered >= panelCount;
+        await sleep(2000);
+        return true;
+        //const panelCount = document.querySelectorAll('.panel-wrapper').length;
+        //return (<any>window).panelsRendered >= panelCount;
       }, {
         timeout: options.timeout * 1000
       });
