@@ -44,12 +44,12 @@ export class Browser {
         browser = await puppeteer.launch({
           executablePath,
           env: env,
-          args: ['--no-sandbox'],
+          args: ["--no-sandbox", "--proxy-server='direct://'", "--proxy-bypass-list=*"],
         });
       } else {
         browser = await puppeteer.launch({
           env: env,
-          args: ['--no-sandbox'],
+          args: ["--no-sandbox", "--proxy-server='direct://'", "--proxy-bypass-list=*"],
         });
       }
       page = await browser.newPage();
@@ -58,7 +58,9 @@ export class Browser {
         width: options.width,
         height: options.height,
         deviceScaleFactor: 1,
-      });
+        });
+
+      await page.setUserAgent('Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0');
 
       await page.setCookie({
         'name': 'renderKey',
@@ -70,7 +72,7 @@ export class Browser {
 
       // wait for all panels to render
       await page.waitForFunction(() => {
-        const panelCount = document.querySelectorAll('.panel').length;
+        const panelCount = document.querySelectorAll('.panel-wrapper').length;
         return (<any>window).panelsRendered >= panelCount;
       }, {
         timeout: options.timeout * 1000
