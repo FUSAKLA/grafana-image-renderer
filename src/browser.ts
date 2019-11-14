@@ -54,7 +54,9 @@ export class Browser {
         } else {
           browser = await puppeteer.launch({
             env: env,
-            args: ['--no-sandbox'],
+            headless: true,
+            args: ["--no-sandbox",  "--proxy-server='direct://'", "--proxy-bypass-list=*", '--ignore-certificate-errors', "--enable-feature=NetworkService"],
+            ignoreHTTPSErrors: true,
           });
         }
       }
@@ -66,13 +68,16 @@ export class Browser {
         deviceScaleFactor: 1,
       });
 
+      await page.setUserAgent('Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0');
+
       await page.setCookie({
         name: 'renderKey',
         value: options.renderKey,
         domain: options.domain,
       });
 
-      await page.goto(options.url);
+      await page.goto(options.url, { waitUntil: "load"});
+
 
       // wait for all panels to render
       await page.waitForFunction(
